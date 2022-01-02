@@ -694,6 +694,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   padding-bottom: 1.5rem;
 }
 
+.pb-4 {
+  padding-bottom: 1rem;
+}
+
 .align-middle {
   vertical-align: middle;
 }
@@ -864,8 +868,16 @@ Ensure the default browser behavior of the `hidden` attribute.
     padding: 2.5rem;
   }
 
+  .sm\:p-8 {
+    padding: 2rem;
+  }
+
   .sm\:pb-8 {
     padding-bottom: 2rem;
+  }
+
+  .sm\:pb-6 {
+    padding-bottom: 1.5rem;
   }
 }
 
@@ -894,5 +906,9 @@ Ensure the default browser behavior of the `hidden` attribute.
 
   .xl\:pb-8 {
     padding-bottom: 2rem;
+  }
+
+  .xl\:pb-6 {
+    padding-bottom: 1.5rem;
   }
 }

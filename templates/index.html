@@ -11,16 +11,17 @@
 <div class="container mx-auto px-4 py-12">
     <div class="bg-white border-gray-100 dark:bg-gray-800 dark:border-gray-500 border-b rounded-t-xl p-4 pb-6 sm:p-10 sm:pb-8 lg:p-6 xl:p-10 xl:pb-8 space-y-6 sm:space-y-8 lg:space-y-6 xl:space-y-8">
         <div class="flex items-center space-x-4">
-            <img src={{ track['album_art'] }} alt="" width="88" height="88" class="flex-none rounded-lg bg-gray-100
+            <img id="cover" src={{ track['album_art'] }} alt="" width="88" height="88" class="flex-none rounded-lg
+            bg-gray-100
             dark:bg-gray-800"/>
             <div class="min-w-0 flex-auto space-y-1 font-semibold">
-                <p class="text-cyan-500 dark:text-cyan-400 text-sm leading-6">
+                <p id="artist" class="text-cyan-500 dark:text-cyan-400 text-sm leading-6">
                     {{ track['artist'] }}
                 </p>
-                <h2 class="text-gray-500 dark:text-gray-400 text-sm leading-6 truncate">
+                <h2 id="album" class="text-gray-500 dark:text-gray-400 text-sm leading-6 truncate">
                     {{ track['album'] }}
                 </h2>
-                <p class="text-gray-900 dark:text-gray-50 text-lg">
+                <p id="title" class="text-gray-900 dark:text-gray-50 text-lg">
                     {{ track['title'] }}
                 </p>
             </div>
@@ -28,16 +29,17 @@
         <div class="space-y-2">
             <div class="relative">
                 <div class="bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div class="bg-cyan-500 dark:bg-cyan-400 w-1/2 h-2" role="progressbar" aria-valuenow="0"
-                         aria-valuemin="0" aria-valuemax="100" style="width: 45%"></div>
+                    <div id="durationProgressbar" class="bg-cyan-500 dark:bg-cyan-400 w-1/2 h-2" role="progressbar"
+                         aria-valuenow="0"
+                         aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
                 </div>
                 <!--<div class="ring-cyan-500 dark:ring-cyan-400 ring-2 absolute left-1/2 top-1/2 w-4 h-4 -mt-2 -ml-2 flex items-center justify-center bg-white rounded-full shadow">
                     <div class="w-1.5 h-1.5 bg-cyan-500 dark:bg-cyan-400 rounded-full ring-1 ring-inset ring-gray-900/5"></div>
                 </div>-->
             </div>
             <div class="flex justify-between text-sm leading-6 font-medium tabular-nums">
-                <div class="text-cyan-500 dark:text-gray-100">{{ track['position'] }}</div>
-                <div class="text-gray-500 dark:text-gray-400">{{ track['duration'] }}</div>
+                <div id="position" class="text-cyan-500 dark:text-gray-100">{{ track['position'] }}</div>
+                <div id="duration" class="text-gray-500 dark:text-gray-400">{{ track['duration'] }}</div>
             </div>
         </div>
     </div>
@@ -52,14 +54,25 @@
                 </svg>
             </button>
         </div>
+
+
         <button type="button"
                 class="bg-white text-gray-900 dark:bg-gray-100 dark:text-gray-700 flex-none -my-2 mx-auto w-20 h-20 rounded-full ring-1 ring-gray-900/5 shadow-md flex items-center justify-center"
-                aria-label="Pause">
+                id="playpause" aria-label="Play&Pause">
+            {% if playing %}
             <svg width="30" height="32" fill="currentColor">
                 <rect x="6" y="4" width="4" height="24" rx="2"/>
                 <rect x="20" y="4" width="4" height="24" rx="2"/>
             </svg>
+            {% else %}
+            <svg width="30" height="32" fill="currentColor">
+                <path d="M 10 2 L 10 30 L 25 16 L 10 2"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round"/>
+            </svg>
+            {% endif %}
         </button>
+
         <div class="flex-auto flex items-center justify-evenly">
             <button type="button" aria-label="Next">
                 <svg width="24" height="24" fill="none">
@@ -76,7 +89,7 @@
 
         <div class="flex justify-between text-sm leading-6 font-medium tabular-nums">
             <div class="text-cyan-500 dark:text-gray-400">
-                <button type="button" aria-label="Next">
+                <button type="button" aria-label="volumedown" id="volumedown">
                     <svg width="24" height="24" fill="none">
                         <path d="M 11 4 L 6 8 L 2 8 v 8 l 4 0 L 11 20 Z"
                               stroke="currentColor" fill="currentColor" stroke-width="2" stroke-linecap="round"
@@ -90,8 +103,8 @@
             <div class="container mx-auto px-2 py-2 align-middle">
                 <div class="relative">
                     <div class="bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div class="bg-cyan-500 dark:bg-cyan-400 w-1/2 h-2" role="progressbar" aria-valuenow="0"
-                             aria-valuemin="0" aria-valuemax="100" style="width: {{ volume }}%"></div>
+                        <div class="bg-cyan-500 dark:bg-cyan-400 w-1/2 h-2" role="progressbar" id="volume"
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{ volume }}%"></div>
                     </div>
                     <!--<div class="ring-cyan-500 dark:ring-cyan-400 ring-2 absolute left-1/2 top-1/2 w-4 h-4 -mt-2 -ml-2 flex items-center justify-center bg-white rounded-full shadow">
                         <div class="w-1.5 h-1.5 bg-cyan-500 dark:bg-cyan-400 rounded-full ring-1 ring-inset ring-gray-900/5"></div>
@@ -99,7 +112,7 @@
                 </div>
             </div>
             <div class="text-gray-500 dark:text-gray-400">
-                <button type="button" aria-label="Next">
+                <button type="button" aria-label="volumeup" id="volumeup">
                     <svg width="24" height="24" fill="none">
                         <path d="M 11 4 L 6 8 L 2 8 v 8 l 4 0 L 11 20 Z" fill="currentColor" stroke="currentColor"
                               stroke-width="2"
@@ -114,5 +127,108 @@
     </div>
 
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    // Extended from https://github.com/SoCo/SoCo/blob/master/examples/webapp/templates/index.html
+    var playing = false;
+    var volume = 0;
+    var position = 0
+    var duration = 100
+
+    function loadState() {
+        $.getJSON('http://127.0.0.1:5000/state').done(function (data) {
+            volume = data['volume'];
+            playing = data["is_playing"];
+            position = data["position"];
+            duration = data['duration'];
+
+            $('#title').text(data['title']);
+            $('#artist').text(data['artist']);
+            $('#album').text(data['album']);
+            $('#duration').text(secondsToMinutes(duration));
+            $('#cover').attr("src", data['album_art']);
+        });
+    }
+
+    function setPosition() {
+        var time = secondsToMinutes(position++);
+        $('#position').text(time);
+        percentage = 100 * position / duration
+        $('#durationProgressbar').css('width', percentage + "%");
+        if (percentage > 100) {
+            loadState()
+        }
+    }
+
+
+    function secondsToMinutes(seconds) {
+        var hours = Math.floor(seconds / 3600);
+        var minutes = Math.floor(seconds / 60);
+        var seconds = seconds % 60;
+        return pad(hours) + ":" + pad(minutes) + ":" + pad(seconds);
+    }
+
+    function pad(num) {
+        var s = "00" + num;
+        return s.substr(s.length - 2);
+    }
+
+    $(document).ready(function () {
+        loadState();
+
+        setInterval("loadState()", 20000);
+        setInterval("setPosition()", 1000);
+
+        $('#next').click(function () {
+            $.ajax('http://127.0.0.1:5000/next');
+            loadState();
+        });
+
+        $('#previous').click(function () {
+            $.ajax('http://127.0.0.1:5000/previous');
+            loadState();
+        });
+
+        $('#playpause').click(function () {
+            if (playing === true) {
+                $.ajax('http://127.0.0.1:5000/pause');
+                playing = false;
+
+                $('#playpause').html('<svg width="30" height="32" fill="currentColor">\n' +
+                    '                <rect x="6" y="4" width="4" height="24" rx="2"/>\n' +
+                    '                <rect x="20" y="4" width="4" height="24" rx="2"/>\n' +
+                    '            </svg>');
+            } else {
+                $.ajax('http://127.0.0.1:5000/play');
+                playing = true;
+
+                $('#playpause').html('<svg width="30" height="32" fill="currentColor">\n' +
+                    '                <path d="M 10 2 L 10 30 L 25 16 L 10 2"\n' +
+                    '                      stroke="currentColor" stroke-width="2" stroke-linecap="round"\n' +
+                    '                      stroke-linejoin="round"/>\n' +
+                    '            </svg>');
+            }
+        });
+
+        $('#volumeup').click(function () {
+            $.ajax('http://127.0.0.1:5000/volumeup');
+            volume++;
+            $('#volume').css('width', volume + "%");
+        });
+
+        $('#volumedown').click(function () {
+            $.ajax('http://127.0.0.1:5000/volumedown');
+            volume--;
+            $('#volume').css('width', volume + "%");
+
+        });
+
+    });
+</script>
+
 </body>
 </html>
