@@ -790,6 +790,14 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-ring-color: rgb(17 24 39 / 0.05);
 }
 
+.duration-1000 {
+  transition-duration: 1000ms;
+}
+
+.ease-linear {
+  transition-timing-function: linear;
+}
+
 @media (prefers-color-scheme: dark) {
   .dark\:border-gray-500 {
     --tw-border-opacity: 1;
