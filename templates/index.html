@@ -145,7 +145,7 @@
     var currentPlaying = true
 
     function loadState() {
-        $.getJSON('http://127.0.0.1:5000/state').done(function (data) {
+        $.getJSON('/state').done(function (data) {
             volume = data['volume'];
             playing = data["is_playing"];
             position = data["position"];
@@ -215,34 +215,34 @@
         setInterval("setPosition()", 1000);
 
         $('#next').click(function () {
-            $.ajax('http://127.0.0.1:5000/next');
+            $.ajax('/next');
             setTimeout(loadState, 1000);
         });
 
         $('#previous').click(function () {
-            $.ajax('http://127.0.0.1:5000/previous');
+            $.ajax('/previous');
             setTimeout(loadState, 1000);
         });
 
         $('#playpause').click(function () {
             if (playing === true) {
-                $.ajax('http://127.0.0.1:5000/pause');
+                $.ajax('/pause');
                 playing = false;
             } else {
-                $.ajax('http://127.0.0.1:5000/play');
+                $.ajax('/play');
                 playing = true;
             }
             setPlayButton(playing);
         });
 
         $('#volumeup').click(function () {
-            $.ajax('http://127.0.0.1:5000/volumeup');
+            $.ajax('/volumeup');
             volume++;
             $('#volume').css('width', volume + "%");
         });
 
         $('#volumedown').click(function () {
-            $.ajax('http://127.0.0.1:5000/volumedown');
+            $.ajax('/volumedown');
             volume--;
             $('#volume').css('width', volume + "%");
 
