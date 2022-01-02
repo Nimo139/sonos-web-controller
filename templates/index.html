@@ -45,7 +45,7 @@
     </div>
     <div class="bg-gray-50 text-gray-500 dark:bg-gray-600 dark:text-gray-200 flex items-center">
         <div class="flex-auto flex items-center justify-evenly">
-            <button type="button" aria-label="Previous">
+            <button type="button" id="previous" aria-label="Previous">
                 <svg width="24" height="24" fill="none">
                     <path d="m10 12 8-6v12l-8-6Z" fill="currentColor" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round"/>
@@ -74,7 +74,7 @@
         </button>
 
         <div class="flex-auto flex items-center justify-evenly">
-            <button type="button" aria-label="Next">
+            <button type="button" id="next" aria-label="Next">
                 <svg width="24" height="24" fill="none">
                     <path d="M14 12 6 6v12l8-6Z" fill="currentColor" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round"/>
@@ -136,8 +136,9 @@
     // Extended from https://github.com/SoCo/SoCo/blob/master/examples/webapp/templates/index.html
     var playing = false;
     var volume = 0;
-    var position = 0
-    var duration = 100
+    var position = 0;
+    var duration = 100;
+    var currentTitle = "";
 
     function loadState() {
         $.getJSON('http://127.0.0.1:5000/state').done(function (data) {
@@ -145,22 +146,28 @@
             playing = data["is_playing"];
             position = data["position"];
             duration = data['duration'];
+            $('#volume').css('width', volume + "%");
 
-            $('#title').text(data['title']);
-            $('#artist').text(data['artist']);
-            $('#album').text(data['album']);
-            $('#duration').text(secondsToMinutes(duration));
-            $('#cover').attr("src", data['album_art']);
+            if (currentTitle != data['title']) {
+                $('#title').text(data['title']);
+                $('#artist').text(data['artist']);
+                $('#album').text(data['album']);
+                $('#duration').text(secondsToMinutes(duration));
+                $('#cover').attr("src", data['album_art']);
+                currentTitle = data['title'];
+            }
         });
     }
 
     function setPosition() {
-        var time = secondsToMinutes(position++);
-        $('#position').text(time);
-        percentage = 100 * position / duration
-        $('#durationProgressbar').css('width', percentage + "%");
-        if (percentage > 100) {
-            loadState()
+        if (playing) {
+            var time = secondsToMinutes(position++);
+            $('#position').text(time);
+            percentage = 100 * position / duration
+            $('#durationProgressbar').css('width', percentage + "%");
+            if (percentage > 100) {
+                loadState()
+            }
         }
     }
 
@@ -185,12 +192,12 @@
 
         $('#next').click(function () {
             $.ajax('http://127.0.0.1:5000/next');
-            loadState();
+            setTimeout(loadState, 1000);
         });
 
         $('#previous').click(function () {
             $.ajax('http://127.0.0.1:5000/previous');
-            loadState();
+            setTimeout(loadState, 1000);
         });
 
         $('#playpause').click(function () {

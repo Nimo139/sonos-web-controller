@@ -52,6 +52,17 @@ def pause():
     status_code = Response(status=200)
     return status_code
 
+@app.route("/next")
+def next():
+    sonos.next()
+    status_code = Response(status=200)
+    return status_code
+
+@app.route("/previous")
+def previous():
+    sonos.previous()
+    status_code = Response(status=200)
+    return status_code
 
 @app.route("/volume")
 def volume():
