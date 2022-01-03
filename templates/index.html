@@ -237,10 +237,11 @@
     var position = 0;
     var duration = 100;
     var currentTitle = "";
-    var currentPlaying = true
+    var currentPlaying = true;
+    var zoneId = 0;
 
     function loadState() {
-        $.getJSON('/state').done(function (data) {
+        $.getJSON('/' + zoneId + '/state').done(function (data) {
             volume = data['volume'];
             playing = data["is_playing"];
             position = data["position"];
@@ -310,34 +311,34 @@
         setInterval("setPosition()", 1000);
 
         $('#next').click(function () {
-            $.ajax('/next');
+            $.ajax('/' + zoneId + '/next');
             setTimeout(loadState, 1000);
         });
 
         $('#previous').click(function () {
-            $.ajax('/previous');
+            $.ajax('/' + zoneId + '/previous');
             setTimeout(loadState, 1000);
         });
 
         $('#playpause').click(function () {
             if (playing === true) {
-                $.ajax('/pause');
+                $.ajax('/' + zoneId + '/pause');
                 playing = false;
             } else {
-                $.ajax('/play');
+                $.ajax('/' + zoneId + '/play');
                 playing = true;
             }
             setPlayButton(playing);
         });
 
         $('#volumeup').click(function () {
-            $.ajax('/volumeup');
+            $.ajax('/' + zoneId + '/volumeup');
             volume++;
             $('#volume').css('width', volume + "%");
         });
 
         $('#volumedown').click(function () {
-            $.ajax('/volumedown');
+            $.ajax('/' + zoneId + '/volumedown');
             volume--;
             $('#volume').css('width', volume + "%");
 
