@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, Response  # For flask implementation
-from soco import SoCo
 from soco import discover
 
 app = Flask(__name__)
 # sonos = SoCo('192.168.178.105')
 zones = list(discover())
+zone_names = list(map(lambda z: z.player_name, zones))
 
 
 @app.route("/")
@@ -13,7 +13,7 @@ def main(zone_id: int = 0):
     track = zones[zone_id].get_current_track_info()
     volume = zones[zone_id].volume
 
-    return render_template('index.html', track=track, volume=volume, playing=is_playing(zone_id))
+    return render_template('index.html', track=track, volume=volume, playing=is_playing(zone_id), zone_names=zone_names)
 
 
 @app.route("/<int:zone_id>/track")

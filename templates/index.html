@@ -26,17 +26,18 @@
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
                             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                            <a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
-                               aria-current="page">Wohnzimmer</a>
-
+                            <!--<a href="#" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+                               aria-current="page">Wohnzimmer</a>-->
+                            {% for name in zone_names %}
                             <a href="#"
-                               class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wohnzimmer 2</a>
-
+                               class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                {{ name }}</a>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
 
-                <div class="-mr-2 flex md:hidden">
+                <div id="menubuttonbox" class="-mr-2 flex md:hidden">
                     <!-- Mobile menu button -->
                     <button type="button"
                             id="menubutton"
@@ -69,13 +70,13 @@
         </div>
 
         <!-- Mobile menu, show/hide based on menu state. -->
-        <div class="hidden md:hidden" id="mobile-menu">
+        <div class="md:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                {% for name in zone_names %}
                 <a href="#" class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
-                   aria-current="page">Wohnzimmer</a>
-                <a href="#"
-                   class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Wohnzimmer 2</a>
+                   aria-current="page">{{ name }}</a>
+                {% endfor %}
             </div>
         </div>
     </nav>
@@ -212,19 +213,19 @@
         crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+    // https://stackoverflow.com/a/63349400
     document.getElementById('menubutton').onclick = function () {
         document.getElementById("mobile-menu").classList.toggle("hidden");
     }
 
-    const toggleprofile = document.getElementById("toggleprofile");
-    [...document.querySelectorAll('body')].forEach(el => {
+    const mobileMenu = document.getElementById("mobile-menu");
+    [...document.querySelectorAll('html')].forEach(el => {
         el.addEventListener('click', event => {
-            if (event.target.parentElement.id !== "toggleprofile") {
-                console.clear();
-                console.log(event.target.parentElement.id)
-                toggleprofile.classList.add("hidden")
-            } else {
-                toggleprofile.classList.toggle("hidden")
+            if (event.target.parentElement == null ||
+                event.target.parentElement.id !== "menubutton" &&
+                event.target.parentElement.id !== "menubuttonbox") {
+                //console.log(event.target.parentElement.id)
+                mobileMenu.classList.add("hidden")
             }
         })
     })
