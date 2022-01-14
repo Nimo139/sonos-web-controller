@@ -11,7 +11,7 @@
 
 <div class="min-h-full">
     <nav class="bg-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -205,14 +205,33 @@
             </div>
         </div>
     </div>
-
 </div>
+
+
+<div class="container mx-auto px-4 py-6 flex flex-wrap">
+    {% for key, value in radio_stations.items() %}
+    <div class="m-2 relative">
+        <img src="{{ value['cover']}}" alt="{{ key }}"
+             class="rounded-lg bg-gray-100 dark:bg-gray-800"
+             id="{{ key }}"
+             width="100" height="100"
+             onclick="startradio(this.id)"/>
+    </div>
+    {% endfor %}
+</div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
         crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+    function startradio(clicked_id) {
+        $.ajax('/' + zoneId + '/radiostation/' + clicked_id);
+        setTimeout(loadState, 3000);
+    }
+
+
     // https://stackoverflow.com/a/63349400
     document.getElementById('menubutton').onclick = function () {
         document.getElementById("mobile-menu").classList.toggle("hidden");
@@ -269,7 +288,10 @@
         if (playing) {
             var time = secondsToMinutes(position++);
             $('#position').text(time);
-            percentage = 100 * position / duration
+            var percentage = 100 * position / (duration + 0.1)
+            if (duration == 0) {
+                percentage = 99
+            }
             $('#durationProgressbar').css('width', percentage + "%");
             if (percentage > 100) {
                 loadState()

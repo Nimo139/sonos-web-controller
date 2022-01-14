@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, Response  # For flask implementation
+import json
+
+from flask import Flask, render_template, request, redirect, url_for, Response, jsonify  # For flask implementation
 from soco import discover
 
 app = Flask(__name__)
@@ -13,7 +15,12 @@ def main(zone_id: int = 0):
     track = zones[zone_id].get_current_track_info()
     volume = zones[zone_id].volume
 
-    return render_template('index.html', track=track, volume=volume, playing=is_playing(zone_id), zone_names=zone_names)
+    return render_template('index.html',
+                           track=track,
+                           volume=volume,
+                           playing=is_playing(zone_id),
+                           radio_stations=get_radio_stations_json(),
+                           zone_names=zone_names)
 
 
 @app.route("/<int:zone_id>/track")
@@ -44,29 +51,25 @@ def time_to_seconds(time):
 @app.route("/<int:zone_id>/play")
 def play(zone_id: int):
     zones[zone_id].play()
-    status_code = Response(status=200)
-    return status_code
+    return Response(status=200)
 
 
 @app.route("/<int:zone_id>/pause")
 def pause(zone_id: int):
     zones[zone_id].pause()
-    status_code = Response(status=200)
-    return status_code
+    return Response(status=200)
 
 
 @app.route("/<int:zone_id>/next")
 def next(zone_id: int):
     zones[zone_id].next()
-    status_code = Response(status=200)
-    return status_code
+    return Response(status=200)
 
 
 @app.route("/<int:zone_id>/previous")
 def previous(zone_id: int):
     zones[zone_id].previous()
-    status_code = Response(status=200)
-    return status_code
+    return Response(status=200)
 
 
 @app.route("/<int:zone_id>/volume")
@@ -77,15 +80,13 @@ def volume(zone_id: int):
 @app.route("/<int:zone_id>/volumeup")
 def volumeup(zone_id: int):
     zones[zone_id].volume += 1
-    status_code = Response(status=200)
-    return status_code
+    return Response(status=200)
 
 
 @app.route("/<int:zone_id>/volumedown")
 def volumedown(zone_id: int):
     zones[zone_id].volume -= 1
-    status_code = Response(status=200)
-    return status_code
+    return Response(status=200)
 
 
 def is_playing(zone_id: int):
@@ -95,6 +96,23 @@ def is_playing(zone_id: int):
     """
     state = zones[zone_id].get_current_transport_info()['current_transport_state']
     return state in ['PLAYING', 'TRANSITIONING']
+
+
+@app.route("/radiostations")
+def get_radio_stations():
+    stations = get_radio_stations_json()
+    return jsonify(stations)
+
+
+def get_radio_stations_json():
+    return json.load(open("radio_stations.json"))
+
+
+@app.route("/<int:zone_id>/radiostation/<station>")
+def play_radio_station(zone_id: int, station: str):
+    uri = get_radio_stations_json()[station]['uri']
+    zones[zone_id].play_uri(uri)
+    return Response(status=200)
 
 
 if __name__ == "__main__":
