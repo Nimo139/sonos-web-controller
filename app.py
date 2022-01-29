@@ -5,22 +5,31 @@ from soco import discover
 
 app = Flask(__name__)
 # sonos = SoCo('192.168.178.105')
-zones = list(discover())
-zone_names = list(map(lambda z: z.player_name, zones))
+sonos_system = discover()
+if sonos_system:
+    zones = list(sonos_system)
+    zone_names = list(map(lambda z: z.player_name, zones))
+else:
+    zones = []
+    zone_names = ["No speakers found"]
 
 
 @app.route("/")
 @app.route("/<int:zone_id>/")
 def main(zone_id: int = 0):
-    track = zones[zone_id].get_current_track_info()
-    volume = zones[zone_id].volume
+    print(zones)
+    if len(zones) > 0:
+        track = zones[zone_id].get_current_track_info()
+        volume = zones[zone_id].volume
 
-    return render_template('index.html',
-                           track=track,
-                           volume=volume,
-                           playing=is_playing(zone_id),
-                           radio_stations=get_radio_stations_json(),
-                           zone_names=zone_names)
+        return render_template('index.html',
+                            track=track,
+                            volume=volume,
+                            playing=is_playing(zone_id),
+                            radio_stations=get_radio_stations_json(),
+                            zone_names=zone_names)
+    else:
+        return "No SONOS speaker found"
 
 
 @app.route("/<int:zone_id>/track")
