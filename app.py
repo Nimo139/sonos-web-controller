@@ -138,5 +138,10 @@ def send_img(path):
     return send_from_directory('static/img', path)
 
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static/img', 'favicon.ico')
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
