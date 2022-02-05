@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, render_template, request, redirect, url_for, Response, jsonify  # For flask implementation
+from flask import Flask, render_template, Response, jsonify, send_from_directory
 from soco import discover
 
 app = Flask(__name__)
@@ -19,7 +19,7 @@ else:
 def main(zone_id: int = 0):
     print(zones)
     if len(zones) > 0:
-        track = zones[zone_id].get_current_track_info()
+        track = get_current_track(zone_id)
         volume = zones[zone_id].volume
 
         return render_template('index.html',
@@ -35,12 +35,21 @@ def main(zone_id: int = 0):
 @app.route("/<int:zone_id>/track")
 def get_current_track(zone_id: int):
     track = zones[zone_id].get_current_track_info()
+    if track['album_art'] == '':
+        track['album_art'] = 'img/music.png'
+
+        stations = get_radio_stations_json()
+        for key, item in stations.items():
+            if item['uri'] == track['uri']:
+                track['album_art'] = item['cover']
+                track['title'] = key
+
     return track
 
 
 @app.route("/<int:zone_id>/state")
 def get_state(zone_id: int):
-    state = zones[zone_id].get_current_track_info()
+    state = get_current_track(zone_id)
     # h:mm:ss to seconds
     state["position"] = time_to_seconds(state["position"])
     state["duration"] = time_to_seconds(state["duration"])
@@ -122,6 +131,11 @@ def play_radio_station(zone_id: int, station: str):
     uri = get_radio_stations_json()[station]['uri']
     zones[zone_id].play_uri(uri)
     return Response(status=200)
+
+
+@app.route('/img/<path:path>')
+def send_img(path):
+    return send_from_directory('static/img', path)
 
 
 if __name__ == "__main__":
