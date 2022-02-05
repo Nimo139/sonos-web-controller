@@ -32,7 +32,7 @@ This application uses the [SoCO](https://github.com/SoCo/SoCo) library as backen
   ```
 - run 
   ```bash
-  docker run --rm -d  -p 80:80/tcp sonoswebcontroller:latest
+   docker run --rm -d  -p 80:80/tcp --name sonos-web --net=host sonoswebcontroller:latest
   ```
 - Visit the website at IP of the host and enjoy 
 
